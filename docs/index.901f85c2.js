@@ -531,7 +531,6 @@ const pixi = new _pixiJs.Application({
 });
 document.body.appendChild(pixi.view);
 let water;
-let fish;
 //
 // STAP 2 - preload alle afbeeldingen
 //
@@ -545,15 +544,27 @@ loader.load(()=>loadCompleted()
 function loadCompleted() {
     water = new _pixiJs.Sprite(loader.resources["waterTexture"].texture);
     pixi.stage.addChild(water);
-    fish = new _pixiJs.Sprite(loader.resources["fishTexture"].texture);
-    fish.anchor.set(0);
-    pixi.stage.addChild(fish);
-    pixi.ticker.add((delta)=>update(delta)
-    );
+    for(let x = 0; x < Math.random() * 100; x++){
+        let fish = new _pixiJs.Sprite(loader.resources["fishTexture"].texture);
+        fish.tint = Math.random() * 16777215;
+        fish.x = Math.random() * 800;
+        fish.y = Math.random() * 450;
+        pixi.stage.addChild(fish);
+        pixi.ticker.add((delta)=>moveFish(fish, delta)
+        );
+        let bubble = new _pixiJs.Sprite(loader.resources["bubbleTexture"].texture);
+        bubble.x = Math.random() * 800;
+        bubble.y = Math.random() * 450;
+        pixi.stage.addChild(bubble);
+        pixi.ticker.add((delta)=>moveBubble(bubble, delta)
+        );
+    }
 }
-function update(delta) {
-    fish.x += delta * 1;
-    fish.rotation += delta * 0.1;
+function moveFish(fish, delta) {
+    fish.x += delta * -1;
+}
+function moveBubble(bubble, delta) {
+    bubble.x += delta * -0.5;
 }
 
 },{"pixi.js":"dsYej","./images/fish.png":"3tLwD","./images/bubble.png":"iMP3P","./images/water.jpg":"jj9Eg","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
