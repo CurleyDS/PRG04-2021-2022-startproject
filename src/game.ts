@@ -1,53 +1,48 @@
-import * as PIXI from 'pixi.js'
+import * as PIXI from "pixi.js"
 import fishImage from "./images/fish.png"
-import bubbleImage from "./images/bubble.png"
-import waterImage from "./images/water.jpg"
-import { Sprite } from 'pixi.js'
+import bgImage from "./images/water.jpg"
 
-//
-// STAP 1 - maak een pixi canvas
-//
-const pixi = new PIXI.Application({ width: 800, height: 450 })
-document.body.appendChild(pixi.view)
+export class Game {
 
-let water: PIXI.Sprite;
+    pixi: PIXI.Application
+    fish:PIXI.Sprite
+    anotherFish:PIXI.Sprite
+    loader:PIXI.Loader
 
-//
-// STAP 2 - preload alle afbeeldingen
-//
-const loader = new PIXI.Loader()
-loader.add('fishTexture', fishImage)
-      .add('bubbleTexture', bubbleImage)
-      .add('waterTexture', waterImage)
-loader.load(()=>loadCompleted())
+    constructor() {
+        this.pixi = new PIXI.Application({ width: 900, height: 500 })
+        document.body.appendChild(this.pixi.view)
 
-//
-// STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-//
-function loadCompleted() {
-    water = new PIXI.Sprite(loader.resources["waterTexture"].texture!);
-    pixi.stage.addChild(water);
+        this.loader = new PIXI.Loader()
+        this.loader
+            .add("fishTexture", fishImage)
+            .add("backgroundTexture", bgImage)
 
-    for (let x = 0; x < Math.random() * 100; x++) {
-        let fish = new PIXI.Sprite(loader.resources["fishTexture"].texture!);
-        fish.tint = Math.random() * 0xFFFFFF;
-        fish.x = Math.random() * 800;
-        fish.y = Math.random() * 450;
-        pixi.stage.addChild(fish);
-        pixi.ticker.add((delta)=>moveFish(fish, delta));
+        this.loader.load(() => this.doneLoading())
+    }
+
+    doneLoading() {
+        console.log("all textures loaded!")
         
-        let bubble = new PIXI.Sprite(loader.resources["bubbleTexture"].texture!);
-        bubble.x = Math.random() * 800;
-        bubble.y = Math.random() * 450;
-        pixi.stage.addChild(bubble);
-        pixi.ticker.add((delta)=>moveBubble(bubble, delta));
+        this.fish = new PIXI.Sprite(this.loader.resources["fishTexture"].texture!)
+        this.fish.tint = Math.random() * 0xFFFFFF;
+        this.fish.x = Math.random() * 800;
+        this.fish.y = Math.random() * 450;
+        this.pixi.stage.addChild(this.fish)
+
+        this.anotherFish = new PIXI.Sprite(this.loader.resources["fishTexture"].texture!)
+        this.anotherFish.tint = Math.random() * 0xFFFFFF;
+        this.anotherFish.x = Math.random() * 800;
+        this.anotherFish.y = Math.random() * 450;
+        this.pixi.stage.addChild(this.anotherFish)
+
+        this.pixi.ticker.add((delta) => this.update(delta))
+    }
+
+    update(delta : number) {
+        this.fish.x -= 2
+        this.anotherFish.x -= 3
     }
 }
 
-function moveFish(fish:PIXI.Sprite, delta:number) {
-    fish.x += delta * -1;
-}
-
-function moveBubble(bubble:PIXI.Sprite, delta:number) {
-    bubble.x += delta * -0.5;
-}
+new Game()

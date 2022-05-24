@@ -515,59 +515,49 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"edeGs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Game", ()=>Game
+);
 var _pixiJs = require("pixi.js");
 var _fishPng = require("./images/fish.png");
 var _fishPngDefault = parcelHelpers.interopDefault(_fishPng);
-var _bubblePng = require("./images/bubble.png");
-var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _waterJpg = require("./images/water.jpg");
 var _waterJpgDefault = parcelHelpers.interopDefault(_waterJpg);
-//
-// STAP 1 - maak een pixi canvas
-//
-const pixi = new _pixiJs.Application({
-    width: 800,
-    height: 450
-});
-document.body.appendChild(pixi.view);
-let water;
-//
-// STAP 2 - preload alle afbeeldingen
-//
-const loader = new _pixiJs.Loader();
-loader.add('fishTexture', _fishPngDefault.default).add('bubbleTexture', _bubblePngDefault.default).add('waterTexture', _waterJpgDefault.default);
-loader.load(()=>loadCompleted()
-);
-//
-// STAP 3 - maak een sprite als de afbeeldingen zijn geladen
-//
-function loadCompleted() {
-    water = new _pixiJs.Sprite(loader.resources["waterTexture"].texture);
-    pixi.stage.addChild(water);
-    for(let x = 0; x < Math.random() * 100; x++){
-        let fish = new _pixiJs.Sprite(loader.resources["fishTexture"].texture);
-        fish.tint = Math.random() * 16777215;
-        fish.x = Math.random() * 800;
-        fish.y = Math.random() * 450;
-        pixi.stage.addChild(fish);
-        pixi.ticker.add((delta)=>moveFish(fish, delta)
-        );
-        let bubble = new _pixiJs.Sprite(loader.resources["bubbleTexture"].texture);
-        bubble.x = Math.random() * 800;
-        bubble.y = Math.random() * 450;
-        pixi.stage.addChild(bubble);
-        pixi.ticker.add((delta)=>moveBubble(bubble, delta)
+class Game {
+    constructor(){
+        this.pixi = new _pixiJs.Application({
+            width: 900,
+            height: 500
+        });
+        document.body.appendChild(this.pixi.view);
+        this.loader = new _pixiJs.Loader();
+        this.loader.add("fishTexture", _fishPngDefault.default).add("backgroundTexture", _waterJpgDefault.default);
+        this.loader.load(()=>this.doneLoading()
         );
     }
+    doneLoading() {
+        console.log("all textures loaded!");
+        this.fish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
+        this.fish.tint = Math.random() * 16777215;
+        this.fish.x = Math.random() * 800;
+        this.fish.y = Math.random() * 450;
+        this.pixi.stage.addChild(this.fish);
+        this.anotherFish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
+        this.anotherFish.tint = Math.random() * 16777215;
+        this.anotherFish.x = Math.random() * 800;
+        this.anotherFish.y = Math.random() * 450;
+        this.pixi.stage.addChild(this.anotherFish);
+        this.pixi.ticker.add((delta)=>this.update(delta)
+        );
+    }
+    update(delta) {
+        this.fish.x -= 2;
+        this.anotherFish.x -= 3;
+    }
 }
-function moveFish(fish, delta) {
-    fish.x += delta * -1;
-}
-function moveBubble(bubble, delta) {
-    bubble.x += delta * -0.5;
-}
+new Game();
 
-},{"pixi.js":"dsYej","./images/fish.png":"3tLwD","./images/bubble.png":"iMP3P","./images/water.jpg":"jj9Eg","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/fish.png":"3tLwD","./images/water.jpg":"jj9Eg"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils
@@ -37101,10 +37091,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"iMP3P":[function(require,module,exports) {
-module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "bubble.56ab0ad6.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"jj9Eg":[function(require,module,exports) {
+},{}],"jj9Eg":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "water.59ff4e4f.jpg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
