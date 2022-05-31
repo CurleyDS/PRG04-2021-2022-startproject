@@ -526,7 +526,8 @@ var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _waterJpg = require("./images/water.jpg");
 var _waterJpgDefault = parcelHelpers.interopDefault(_waterJpg);
 class Game {
-    sprites = [];
+    fishes = [];
+    bubbles = [];
     constructor(){
         this.pixi = new _pixiJs.Application({
             width: 900,
@@ -540,7 +541,7 @@ class Game {
     }
     doneLoading() {
         console.log("all textures loaded!");
-        this.background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
+        this.background = new _pixiJs.TilingSprite(this.loader.resources["backgroundTexture"].texture, this.pixi.screen.width, this.pixi.screen.height);
         this.pixi.stage.addChild(this.background);
         for(let x = 0; x < 10; x++){
             let fish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
@@ -552,32 +553,25 @@ class Game {
             ];
             myfilter.hue(Math.random() * 360, false);
             this.pixi.stage.addChild(fish);
-            this.sprites.push(fish);
+            this.fishes.push(fish);
         }
-        this.bubble = new _pixiJs.Sprite(this.loader.resources["bubbleTexture"].texture);
-        this.bubble.x = Math.random() * 900;
-        this.bubble.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.bubble);
-        this.anotherBubble = new _pixiJs.Sprite(this.loader.resources["bubbleTexture"].texture);
-        this.anotherBubble.x = Math.random() * 900;
-        this.anotherBubble.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.anotherBubble);
+        for(let x1 = 0; x1 < 10; x1++){
+            let bubble = new _pixiJs.Sprite(this.loader.resources["bubbleTexture"].texture);
+            bubble.blendMode = _pixiJs.BLEND_MODES.ADD;
+            bubble.x = Math.random() * 900;
+            bubble.y = Math.random() * 500;
+            this.pixi.stage.addChild(bubble);
+            this.bubbles.push(bubble);
+        }
         this.pixi.ticker.add((delta)=>this.update(delta)
         );
     }
     update(delta) {
-        for (let sprite of this.sprites)if (sprite.x <= 0) sprite.x = 900;
-        else sprite.x -= 1 * delta;
-        if (this.bubble.y <= 0) this.bubble.y = 500;
-        else this.moveBubble();
-        if (this.anotherBubble.y <= 0) this.anotherBubble.y = 500;
-        else this.moveAnotherBubble();
-    }
-    moveBubble() {
-        this.bubble.y -= 2;
-    }
-    moveAnotherBubble() {
-        this.anotherBubble.y -= 3;
+        this.background.tilePosition.x += 1;
+        for (let fish of this.fishes)if (fish.x <= 0) fish.x = 900;
+        else fish.x -= 2 * delta;
+        for (let bubble of this.bubbles)if (bubble.y <= 0) bubble.y = 500;
+        else bubble.y -= 2;
     }
 }
 new Game();

@@ -6,10 +6,9 @@ import bgImage from "./images/water.jpg"
 export class Game {
 
     pixi: PIXI.Application
-    background:PIXI.Sprite
-    sprites:PIXI.Sprite[] = []
-    bubble:PIXI.Sprite
-    anotherBubble:PIXI.Sprite
+    background:PIXI.TilingSprite
+    fishes:PIXI.Sprite[] = []
+    bubbles:PIXI.Sprite[] = []
     loader:PIXI.Loader
 
     constructor() {
@@ -28,7 +27,11 @@ export class Game {
     doneLoading() {
         console.log("all textures loaded!")
         
-        this.background = new PIXI.Sprite(this.loader.resources["backgroundTexture"].texture!)
+        this.background = new PIXI.TilingSprite(
+            this.loader.resources["backgroundTexture"].texture!,
+            this.pixi.screen.width,
+            this.pixi.screen.height,
+        )
         this.pixi.stage.addChild(this.background)
         
         for (let x = 0; x < 10; x++) {
@@ -41,50 +44,40 @@ export class Game {
             myfilter.hue(Math.random()*360, false)
 
             this.pixi.stage.addChild(fish)
-            this.sprites.push(fish)
+            this.fishes.push(fish)
         }
         
-        this.bubble = new PIXI.Sprite(this.loader.resources["bubbleTexture"].texture!)
-        this.bubble.x = Math.random() * 900;
-        this.bubble.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.bubble)
+        for (let x = 0; x < 10; x++) {
+            let bubble = new PIXI.Sprite(this.loader.resources["bubbleTexture"].texture!)
+            bubble.blendMode = PIXI.BLEND_MODES.ADD
+            bubble.x = Math.random() * 900;
+            bubble.y = Math.random() * 500;
 
-        this.anotherBubble = new PIXI.Sprite(this.loader.resources["bubbleTexture"].texture!)
-        this.anotherBubble.x = Math.random() * 900;
-        this.anotherBubble.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.anotherBubble)
+            this.pixi.stage.addChild(bubble)
+            this.bubbles.push(bubble)
+        }
         
         this.pixi.ticker.add((delta) => this.update(delta))
     }
 
-    update(delta : number) {
-        for (let sprite of this.sprites) {
-            if (sprite.x <= 0) {
-                sprite.x = 900
+    update(delta:number) {
+        this.background.tilePosition.x += 1;
+        
+        for (let fish of this.fishes) {
+            if (fish.x <= 0) {
+                fish.x = 900
             } else {
-                sprite.x -= 1 * delta
+                fish.x -= 2 * delta
             }
         }
 
-        if (this.bubble.y <= 0) {
-            this.bubble.y = 500
-        } else {
-            this.moveBubble()
+        for (let bubble of this.bubbles) {
+            if (bubble.y <= 0) {
+                bubble.y = 500
+            } else {
+                bubble.y -= 2
+            }
         }
-
-        if (this.anotherBubble.y <= 0) {
-            this.anotherBubble.y = 500
-        } else {
-            this.moveAnotherBubble()
-        }
-    }
-
-    moveBubble() {
-        this.bubble.y -= 2
-    }
-
-    moveAnotherBubble() {
-        this.anotherBubble.y -= 3
     }
 }
 
