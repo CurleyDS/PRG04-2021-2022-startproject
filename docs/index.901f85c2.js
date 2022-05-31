@@ -526,6 +526,7 @@ var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _waterJpg = require("./images/water.jpg");
 var _waterJpgDefault = parcelHelpers.interopDefault(_waterJpg);
 class Game {
+    sprites = [];
     constructor(){
         this.pixi = new _pixiJs.Application({
             width: 900,
@@ -541,16 +542,18 @@ class Game {
         console.log("all textures loaded!");
         this.background = new _pixiJs.Sprite(this.loader.resources["backgroundTexture"].texture);
         this.pixi.stage.addChild(this.background);
-        this.fish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
-        this.fish.tint = Math.random() * 16777215;
-        this.fish.x = Math.random() * 900;
-        this.fish.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.fish);
-        this.anotherFish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
-        this.anotherFish.tint = Math.random() * 16777215;
-        this.anotherFish.x = Math.random() * 900;
-        this.anotherFish.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.anotherFish);
+        for(let x = 0; x < 10; x++){
+            let fish = new _pixiJs.Sprite(this.loader.resources["fishTexture"].texture);
+            fish.x = Math.random() * 900;
+            fish.y = Math.random() * 500;
+            const myfilter = new _pixiJs.filters.ColorMatrixFilter();
+            fish.filters = [
+                myfilter
+            ];
+            myfilter.hue(Math.random() * 360, false);
+            this.pixi.stage.addChild(fish);
+            this.sprites.push(fish);
+        }
         this.bubble = new _pixiJs.Sprite(this.loader.resources["bubbleTexture"].texture);
         this.bubble.x = Math.random() * 900;
         this.bubble.y = Math.random() * 500;
@@ -563,20 +566,12 @@ class Game {
         );
     }
     update(delta) {
-        if (this.fish.x <= 0) this.fish.x = 900;
-        else this.moveFish();
-        if (this.anotherFish.x <= 0) this.anotherFish.x = 900;
-        else this.moveAnotherFish();
+        for (let sprite of this.sprites)if (sprite.x <= 0) sprite.x = 900;
+        else sprite.x -= 1 * delta;
         if (this.bubble.y <= 0) this.bubble.y = 500;
         else this.moveBubble();
         if (this.anotherBubble.y <= 0) this.anotherBubble.y = 500;
         else this.moveAnotherBubble();
-    }
-    moveFish() {
-        this.fish.x -= 2;
-    }
-    moveAnotherFish() {
-        this.anotherFish.x -= 3;
     }
     moveBubble() {
         this.bubble.y -= 2;

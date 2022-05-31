@@ -7,8 +7,7 @@ export class Game {
 
     pixi: PIXI.Application
     background:PIXI.Sprite
-    fish:PIXI.Sprite
-    anotherFish:PIXI.Sprite
+    sprites:PIXI.Sprite[] = []
     bubble:PIXI.Sprite
     anotherBubble:PIXI.Sprite
     loader:PIXI.Loader
@@ -32,17 +31,18 @@ export class Game {
         this.background = new PIXI.Sprite(this.loader.resources["backgroundTexture"].texture!)
         this.pixi.stage.addChild(this.background)
         
-        this.fish = new PIXI.Sprite(this.loader.resources["fishTexture"].texture!)
-        this.fish.tint = Math.random() * 0xFFFFFF;
-        this.fish.x = Math.random() * 900;
-        this.fish.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.fish)
+        for (let x = 0; x < 10; x++) {
+            let fish = new PIXI.Sprite(this.loader.resources["fishTexture"].texture!)
+            fish.x = Math.random() * 900;
+            fish.y = Math.random() * 500;
+    
+            const myfilter = new PIXI.filters.ColorMatrixFilter()
+            fish.filters = [myfilter]
+            myfilter.hue(Math.random()*360, false)
 
-        this.anotherFish = new PIXI.Sprite(this.loader.resources["fishTexture"].texture!)
-        this.anotherFish.tint = Math.random() * 0xFFFFFF;
-        this.anotherFish.x = Math.random() * 900;
-        this.anotherFish.y = Math.random() * 500;
-        this.pixi.stage.addChild(this.anotherFish)
+            this.pixi.stage.addChild(fish)
+            this.sprites.push(fish)
+        }
         
         this.bubble = new PIXI.Sprite(this.loader.resources["bubbleTexture"].texture!)
         this.bubble.x = Math.random() * 900;
@@ -53,21 +53,17 @@ export class Game {
         this.anotherBubble.x = Math.random() * 900;
         this.anotherBubble.y = Math.random() * 500;
         this.pixi.stage.addChild(this.anotherBubble)
-
+        
         this.pixi.ticker.add((delta) => this.update(delta))
     }
 
     update(delta : number) {
-        if (this.fish.x <= 0) {
-            this.fish.x = 900
-        } else {
-            this.moveFish()
-        }
-        
-        if (this.anotherFish.x <= 0) {
-            this.anotherFish.x = 900
-        } else {
-            this.moveAnotherFish()
+        for (let sprite of this.sprites) {
+            if (sprite.x <= 0) {
+                sprite.x = 900
+            } else {
+                sprite.x -= 1 * delta
+            }
         }
 
         if (this.bubble.y <= 0) {
@@ -81,14 +77,6 @@ export class Game {
         } else {
             this.moveAnotherBubble()
         }
-    }
-
-    moveFish() {
-        this.fish.x -= 2
-    }
-
-    moveAnotherFish() {
-        this.anotherFish.x -= 3
     }
 
     moveBubble() {
