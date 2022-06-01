@@ -13,7 +13,7 @@ export class Bubble extends PIXI.Sprite {
         if (this.y <= 0) {
             this.y = 500
         } else {
-            this.y -= 5
+            this.y -= 5 * delta
         }
     }
 }

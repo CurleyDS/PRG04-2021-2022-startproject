@@ -10,8 +10,8 @@ export class Game {
     pixi: PIXI.Application
     loader:PIXI.Loader
     background:PIXI.TilingSprite
-    fish:Fish
-    bubble:Bubble
+    fishes:Fish[] = []
+    bubbles:Bubble[] = []
 
     constructor() {
         this.pixi = new PIXI.Application({ width: 900, height: 500 })
@@ -34,19 +34,31 @@ export class Game {
         )
         this.pixi.stage.addChild(this.background)
         
-        this.fish = new Fish(this.loader.resources["fishTexture"].texture!)
-        this.pixi.stage.addChild(this.fish);
+        for (let x = 0; x < 10; x++) {
+            let fish = new Fish(this.loader.resources["fishTexture"].texture!)
+            this.pixi.stage.addChild(fish);
+            this.fishes.push(fish);
+        }
         
-        this.bubble = new Bubble(this.loader.resources["bubbleTexture"].texture!)
-        this.pixi.stage.addChild(this.bubble);
+        for (let x = 0; x < 10; x++) {
+            let bubble = new Bubble(this.loader.resources["bubbleTexture"].texture!)
+            this.pixi.stage.addChild(bubble);
+            this.bubbles.push(bubble);
+        }
         
         this.pixi.ticker.add((delta) => this.update(delta))
     }
 
     update(delta:number) {
         this.background.tilePosition.x += 1;
-        this.fish.update(delta)
-        this.bubble.update(delta)
+        
+        for (let fish of this.fishes) {
+            fish.update(delta)
+        }
+
+        for (let bubble of this.bubbles) {
+            bubble.update(delta)
+        }
     }
 }
 

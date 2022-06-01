@@ -528,6 +528,8 @@ var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _fish = require("./fish");
 var _bubble = require("./bubble");
 class Game {
+    fishes = [];
+    bubbles = [];
     constructor(){
         this.pixi = new _pixiJs.Application({
             width: 900,
@@ -542,17 +544,23 @@ class Game {
     doneLoading() {
         this.background = new _pixiJs.TilingSprite(this.loader.resources["backgroundTexture"].texture, this.pixi.screen.width, this.pixi.screen.height);
         this.pixi.stage.addChild(this.background);
-        this.fish = new _fish.Fish(this.loader.resources["fishTexture"].texture);
-        this.pixi.stage.addChild(this.fish);
-        this.bubble = new _bubble.Bubble(this.loader.resources["bubbleTexture"].texture);
-        this.pixi.stage.addChild(this.bubble);
+        for(let x = 0; x < 10; x++){
+            let fish = new _fish.Fish(this.loader.resources["fishTexture"].texture);
+            this.pixi.stage.addChild(fish);
+            this.fishes.push(fish);
+        }
+        for(let x1 = 0; x1 < 10; x1++){
+            let bubble = new _bubble.Bubble(this.loader.resources["bubbleTexture"].texture);
+            this.pixi.stage.addChild(bubble);
+            this.bubbles.push(bubble);
+        }
         this.pixi.ticker.add((delta)=>this.update(delta)
         );
     }
     update(delta) {
         this.background.tilePosition.x += 1;
-        this.fish.update(delta);
-        this.bubble.update(delta);
+        for (let fish of this.fishes)fish.update(delta);
+        for (let bubble of this.bubbles)bubble.update(delta);
     }
 }
 new Game();
@@ -37132,7 +37140,7 @@ class Bubble extends _pixiJs.Sprite {
     }
     update(delta) {
         if (this.y <= 0) this.y = 500;
-        else this.y -= 5;
+        else this.y -= 5 * delta;
     }
 }
 
