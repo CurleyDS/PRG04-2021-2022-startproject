@@ -525,10 +525,13 @@ var _fishPng = require("./images/fish.png");
 var _fishPngDefault = parcelHelpers.interopDefault(_fishPng);
 var _bonesPng = require("./images/bones.png");
 var _bonesPngDefault = parcelHelpers.interopDefault(_bonesPng);
+var _sharkPng = require("./images/shark.png");
+var _sharkPngDefault = parcelHelpers.interopDefault(_sharkPng);
 var _bubblePng = require("./images/bubble.png");
 var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _fish = require("./fish");
 var _bubble = require("./bubble");
+var _shark = require("./shark");
 class Game {
     fishes = [];
     bubbles = [];
@@ -539,7 +542,7 @@ class Game {
         });
         document.body.appendChild(this.pixi.view);
         this.loader = new _pixiJs.Loader();
-        this.loader.add("backgroundTexture", _waterJpgDefault.default).add("fishTexture", _fishPngDefault.default).add("deadTexture", _bonesPngDefault.default).add("bubbleTexture", _bubblePngDefault.default);
+        this.loader.add("backgroundTexture", _waterJpgDefault.default).add("fishTexture", _fishPngDefault.default).add("deadTexture", _bonesPngDefault.default).add("bubbleTexture", _bubblePngDefault.default).add("sharkTexture", _sharkPngDefault.default);
         this.loader.load(()=>this.doneLoading()
         );
     }
@@ -556,6 +559,8 @@ class Game {
             this.pixi.stage.addChild(bubble);
             this.bubbles.push(bubble);
         }
+        this.shark = new _shark.Shark(this.loader.resources["sharkTexture"].texture);
+        this.pixi.stage.addChild(this.shark);
         this.pixi.ticker.add((delta)=>this.update(delta)
         );
     }
@@ -563,11 +568,18 @@ class Game {
         this.background.tilePosition.x += 1;
         for (let fish of this.fishes)fish.update(delta);
         for (let bubble of this.bubbles)bubble.update(delta);
+        this.shark.update();
+        for (let fish1 of this.fishes)if (this.collision(this.shark, fish1)) console.log("player touches enemy 💀");
+    }
+    collision(sprite1, sprite2) {
+        const bounds1 = sprite1.getBounds();
+        const bounds2 = sprite2.getBounds();
+        return bounds1.x < bounds2.x + bounds2.width && bounds1.x + bounds1.width > bounds2.x && bounds1.y < bounds2.y + bounds2.height && bounds1.y + bounds1.height > bounds2.y;
     }
 }
 new Game();
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/fish.png":"3tLwD","./fish":"7VsCH","./images/water.jpg":"jj9Eg","./images/bubble.png":"iMP3P","./bubble":"iOWvL","./images/bones.png":"dLwEI"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/fish.png":"3tLwD","./fish":"7VsCH","./images/water.jpg":"jj9Eg","./images/bubble.png":"iMP3P","./bubble":"iOWvL","./images/bones.png":"dLwEI","./images/shark.png":"7HgQx","./shark":"kN3uI"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils
@@ -37162,6 +37174,67 @@ class Bubble extends _pixiJs.Sprite {
 },{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dLwEI":[function(require,module,exports) {
 module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "bones.df4825d2.png" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"lgJ39"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
+},{"./helpers/bundle-url":"lgJ39"}],"7HgQx":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "shark.29daeb95.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"kN3uI":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Shark", ()=>Shark
+);
+var _pixiJs = require("pixi.js");
+class Shark extends _pixiJs.Sprite {
+    xspeed = 0;
+    yspeed = 0;
+    constructor(texture){
+        super(texture);
+        window.addEventListener("keydown", (e)=>this.onKeyDown(e)
+        );
+        window.addEventListener("keyup", (e)=>this.onKeyUp(e)
+        );
+    }
+    update() {
+        this.x += this.xspeed;
+        this.y += this.yspeed;
+    }
+    onKeyDown(e) {
+        switch(e.key.toUpperCase()){
+            case "A":
+            case "ARROWLEFT":
+                this.xspeed = -7;
+                break;
+            case "D":
+            case "ARROWRIGHT":
+                this.xspeed = 7;
+                break;
+            case "W":
+            case "ARROWUP":
+                this.yspeed = -7;
+                break;
+            case "S":
+            case "ARROWDOWN":
+                this.yspeed = 7;
+                break;
+        }
+    }
+    onKeyUp(e) {
+        switch(e.key.toUpperCase()){
+            case "A":
+            case "D":
+            case "ARROWLEFT":
+            case "ARROWRIGHT":
+                this.xspeed = 0;
+                break;
+            case "W":
+            case "S":
+            case "ARROWUP":
+            case "ARROWDOWN":
+                this.yspeed = 0;
+                break;
+        }
+    }
+}
+
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
 
 //# sourceMappingURL=index.901f85c2.js.map

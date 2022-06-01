@@ -9,7 +9,7 @@ export class Bubble extends PIXI.Sprite {
         this.scale.set(0.5)
     }
 
-    update(delta:number) {
+    public update(delta:number) {
         if (this.y <= 0) {
             this.y = 450
         } else {

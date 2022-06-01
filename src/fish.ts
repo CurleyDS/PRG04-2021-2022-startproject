@@ -2,8 +2,8 @@ import * as PIXI from "pixi.js"
 
 export class Fish extends PIXI.Sprite {
     
-    alive:boolean = true
-    deadTexture:PIXI.Texture
+    private alive:boolean = true
+    private deadTexture:PIXI.Texture
 
     constructor(texture: PIXI.Texture, deadTexture: PIXI.Texture) {
         super(texture)
@@ -18,7 +18,7 @@ export class Fish extends PIXI.Sprite {
         this.on('pointerdown', () => this.fishClicked())
     }
 
-    update(delta:number) {
+    public update(delta:number) {
         if (this.x <= -50) {
             this.x = 850
         } else {
@@ -32,7 +32,7 @@ export class Fish extends PIXI.Sprite {
         }
     }
 
-    fishClicked() {
+    private fishClicked() {
         this.alive = false
         this.texture = this.deadTexture
     }
