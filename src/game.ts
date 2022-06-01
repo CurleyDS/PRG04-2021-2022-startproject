@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js"
 import bgImage from "./images/water.jpg"
 import fishImage from "./images/fish.png"
+import bonesImage from "./images/bones.png"
 import bubbleImage from "./images/bubble.png"
 import { Fish } from "./fish"
 import { Bubble } from "./bubble"
@@ -14,13 +15,14 @@ export class Game {
     bubbles:Bubble[] = []
 
     constructor() {
-        this.pixi = new PIXI.Application({ width: 900, height: 500 })
+        this.pixi = new PIXI.Application({ width: 800, height: 450 })
         document.body.appendChild(this.pixi.view)
 
         this.loader = new PIXI.Loader()
         this.loader
             .add("backgroundTexture", bgImage)
             .add("fishTexture", fishImage)
+            .add("deadTexture", bonesImage)
             .add("bubbleTexture", bubbleImage)
 
         this.loader.load(() => this.doneLoading())
@@ -35,7 +37,9 @@ export class Game {
         this.pixi.stage.addChild(this.background)
         
         for (let x = 0; x < 10; x++) {
-            let fish = new Fish(this.loader.resources["fishTexture"].texture!)
+            let fish = new Fish(
+                this.loader.resources["fishTexture"].texture!,
+                this.loader.resources["deadTexture"].texture!)
             this.pixi.stage.addChild(fish);
             this.fishes.push(fish);
         }

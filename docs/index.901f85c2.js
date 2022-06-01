@@ -523,6 +523,8 @@ var _waterJpg = require("./images/water.jpg");
 var _waterJpgDefault = parcelHelpers.interopDefault(_waterJpg);
 var _fishPng = require("./images/fish.png");
 var _fishPngDefault = parcelHelpers.interopDefault(_fishPng);
+var _bonesPng = require("./images/bones.png");
+var _bonesPngDefault = parcelHelpers.interopDefault(_bonesPng);
 var _bubblePng = require("./images/bubble.png");
 var _bubblePngDefault = parcelHelpers.interopDefault(_bubblePng);
 var _fish = require("./fish");
@@ -532,12 +534,12 @@ class Game {
     bubbles = [];
     constructor(){
         this.pixi = new _pixiJs.Application({
-            width: 900,
-            height: 500
+            width: 800,
+            height: 450
         });
         document.body.appendChild(this.pixi.view);
         this.loader = new _pixiJs.Loader();
-        this.loader.add("backgroundTexture", _waterJpgDefault.default).add("fishTexture", _fishPngDefault.default).add("bubbleTexture", _bubblePngDefault.default);
+        this.loader.add("backgroundTexture", _waterJpgDefault.default).add("fishTexture", _fishPngDefault.default).add("deadTexture", _bonesPngDefault.default).add("bubbleTexture", _bubblePngDefault.default);
         this.loader.load(()=>this.doneLoading()
         );
     }
@@ -545,7 +547,7 @@ class Game {
         this.background = new _pixiJs.TilingSprite(this.loader.resources["backgroundTexture"].texture, this.pixi.screen.width, this.pixi.screen.height);
         this.pixi.stage.addChild(this.background);
         for(let x = 0; x < 10; x++){
-            let fish = new _fish.Fish(this.loader.resources["fishTexture"].texture);
+            let fish = new _fish.Fish(this.loader.resources["fishTexture"].texture, this.loader.resources["deadTexture"].texture);
             this.pixi.stage.addChild(fish);
             this.fishes.push(fish);
         }
@@ -565,7 +567,7 @@ class Game {
 }
 new Game();
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/fish.png":"3tLwD","./fish":"7VsCH","./images/water.jpg":"jj9Eg","./images/bubble.png":"iMP3P","./bubble":"iOWvL"}],"dsYej":[function(require,module,exports) {
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./images/fish.png":"3tLwD","./fish":"7VsCH","./images/water.jpg":"jj9Eg","./images/bubble.png":"iMP3P","./bubble":"iOWvL","./images/bones.png":"dLwEI"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "utils", ()=>_utils
@@ -37106,16 +37108,29 @@ parcelHelpers.export(exports, "Fish", ()=>Fish
 );
 var _pixiJs = require("pixi.js");
 class Fish extends _pixiJs.Sprite {
-    constructor(texture){
+    alive = true;
+    constructor(texture, deadTexture){
         super(texture);
+        this.deadTexture = deadTexture;
         this.x = Math.random() * 900;
         this.y = Math.random() * 500;
         this.scale.set(0.5);
         this.tint = Math.random() * 16777215;
+        this.interactive = true;
+        this.buttonMode = true;
+        this.on('pointerdown', ()=>this.fishClicked()
+        );
     }
     update(delta) {
-        if (this.x <= 0) this.x = 900;
-        else this.x -= 5 * delta;
+        if (this.x <= -50) this.x = 850;
+        else {
+            if (this.alive == true) this.x -= 5 * delta;
+            else if (this.y <= 410) this.y += 5 * delta;
+        }
+    }
+    fishClicked() {
+        this.alive = false;
+        this.texture = this.deadTexture;
     }
 }
 
@@ -37134,16 +37149,19 @@ var _pixiJs = require("pixi.js");
 class Bubble extends _pixiJs.Sprite {
     constructor(texture){
         super(texture);
-        this.x = Math.random() * 900;
-        this.y = Math.random() * 500;
+        this.x = Math.random() * 800;
+        this.y = Math.random() * 450;
         this.scale.set(0.5);
     }
     update(delta) {
-        if (this.y <= 0) this.y = 500;
+        if (this.y <= 0) this.y = 450;
         else this.y -= 5 * delta;
     }
 }
 
-},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
+},{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dLwEI":[function(require,module,exports) {
+module.exports = require('./helpers/bundle-url').getBundleURL('emE5o') + "bones.df4825d2.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
 
 //# sourceMappingURL=index.901f85c2.js.map
