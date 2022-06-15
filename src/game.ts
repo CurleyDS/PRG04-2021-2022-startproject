@@ -8,17 +8,23 @@ import { Fish } from "./fish"
 import { Bubble } from "./bubble"
 import { Shark } from "./shark"
 
+// import soundFile from "url:./audio/file.mp3"; // to import sound file
+
 export class Game {
 
+    private pixiWidth = 800
+    private pixiHeight = 450
     private pixi: PIXI.Application
     private loader:PIXI.Loader
     private background:PIXI.TilingSprite
     private fishes:Fish[] = []
     private bubbles:Bubble[] = []
     private shark:Shark
+    // timeCounter:number = 0 // variable to count time
+    // interface:PIXI.Text // text to show time
 
     constructor() {
-        this.pixi = new PIXI.Application({ width: 800, height: 450 })
+        this.pixi = new PIXI.Application({ width: this.pixiWidth, height: this.pixiHeight })
         document.body.appendChild(this.pixi.view)
 
         this.loader = new PIXI.Loader()
@@ -28,6 +34,7 @@ export class Game {
             .add("deadTexture", bonesImage)
             .add("bubbleTexture", bubbleImage)
             .add("sharkTexture", sharkImage)
+            // .add("sound", soundFile) // to load in sound file
 
         this.loader.load(() => this.doneLoading())
     }
@@ -35,15 +42,16 @@ export class Game {
     doneLoading() {
         this.background = new PIXI.TilingSprite(
             this.loader.resources["backgroundTexture"].texture!,
-            this.pixi.screen.width,
-            this.pixi.screen.height,
+            this.pixiWidth,
+            this.pixiHeight,
         )
         this.pixi.stage.addChild(this.background)
         
         for (let x = 0; x < 10; x++) {
             let fish = new Fish(
                 this.loader.resources["fishTexture"].texture!,
-                this.loader.resources["deadTexture"].texture!)
+                this.loader.resources["deadTexture"].texture!
+            )
             this.pixi.stage.addChild(fish);
             this.fishes.push(fish);
         }
@@ -58,6 +66,12 @@ export class Game {
         this.pixi.stage.addChild(this.shark);
         
         this.pixi.ticker.add((delta) => this.update(delta))
+
+        // let sound = this.loader.["sound"].data; // to set sound variable
+        // sound.play(); // to play sound
+
+        // this.interface = new Text(`Time: ${Math.floor(100/this.timeCounter)}`); // create interface
+        // this.pixi.stage.addChild(this.interface); // add interface to stage
     }
 
     update(delta:number) {
@@ -75,9 +89,12 @@ export class Game {
 
         for (let fish of this.fishes) {
             if(this.collision(this.shark, fish)){
-                console.log("player touches enemy 💀")
+                fish.fishKilled()
             }
         }
+
+        // this.timeCounter++; // count miliseconds
+        // this.interface.text = `Time: ${Math.floor(100/this.timeCounter)}`; // show time
     }
 
     collision(sprite1:PIXI.Sprite, sprite2:PIXI.Sprite) {

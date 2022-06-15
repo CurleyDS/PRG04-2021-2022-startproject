@@ -15,7 +15,7 @@ export class Fish extends PIXI.Sprite {
 
         this.interactive = true
         this.buttonMode = true
-        this.on('pointerdown', () => this.fishClicked())
+        this.on('pointerdown', () => this.fishKilled())
     }
 
     public update(delta:number) {
@@ -32,7 +32,7 @@ export class Fish extends PIXI.Sprite {
         }
     }
 
-    private fishClicked() {
+    public fishKilled() {
         this.alive = false
         this.texture = this.deadTexture
     }

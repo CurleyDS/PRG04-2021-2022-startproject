@@ -37239,4 +37239,4 @@ class Shark extends _pixiJs.Sprite {
 
 },{"pixi.js":"dsYej","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fpRtI","edeGs"], "edeGs", "parcelRequirea0e5")
 
-//# sourceMappingURL=index.901f85c2.js.map
+//# sourceMappingURL=game.901f85c2.js.map
